@@ -1,7 +1,7 @@
 name: Cross Compile GodPotatoBOF
 
 on: 
-  workflow_dispatch: # 支持网页手动点击一键运行
+  workflow_dispatch:
 
 jobs:
   mingw-build:
@@ -10,24 +10,17 @@ jobs:
       - name: 1. 拉取代码
         uses: actions/checkout@v4
 
-      - name: 2. 强行安装 Windows 64位交叉编译器
+      - name: 2. 安装编译器
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-mingw-w64-x86-64 mingw-w64 make
+          sudo apt-get install -y gcc-mingw-w64-x86-64 mingw-w64
 
-      - name: 3. 验证编译器是否存在
+      - name: 3. 一句话原生强制编译
         run: |
-          x86_64-w64-mingw32-gcc --version
+          x86_64-w64-mingw32-gcc -nostdlib -o entry.x64.o -I. -Icommon -Os -c -DBOF -fno-builtin -D__USE_MINGW_ANSI_STDIO=0 -mno-stack-arg-probe entry.c
 
-      - name: 4. 执行编译
-        run: |
-          mkdir -p build
-          make
-
-      - name: 5. 打包并上传编译好的产物
+      - name: 4. 打包并上传
         uses: actions/upload-artifact@v4
         with:
           name: GodPotatoBOF-x64-O-File
-          path: |
-            build/
-            *.o
+          path: entry.x64.o
