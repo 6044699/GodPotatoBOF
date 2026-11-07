@@ -15,9 +15,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-mingw-w64-x86-64 mingw-w64
 
-      - name: 3. 一句话原生强制编译
+      - name: 3. 一句话原生强制编译（加入标准库符号映射与头文件目录）
         run: |
-          x86_64-w64-mingw32-gcc -nostdlib -o entry.x64.o -I. -Icommon -Os -c -DBOF -fno-builtin -D__USE_MINGW_ANSI_STDIO=0 -mno-stack-arg-probe entry.c
+          x86_64-w64-mingw32-gcc -nostdlib -o entry.x64.o -I. -Icommon -I/usr/share/mingw-w64/include/ -Os -c -DBOF -fno-builtin -mno-stack-arg-probe GodPotato.c
 
       - name: 4. 打包并上传
         uses: actions/upload-artifact@v4
